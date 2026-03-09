@@ -729,7 +729,7 @@ export default function ECommerceAuditDashboard() {
               </div>
               <div style={{ flex: 1, minWidth: 260 }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {attributionWeighted.sort((a, b) => b.weighted - a.weighted).map((d, i) => (
+                  {[...attributionWeighted].sort((a, b) => b.weighted - a.weighted).map((d, i) => (
                     <div key={i} style={{
                       background: "#0F172A", borderRadius: 10, padding: "12px 16px",
                       border: `1px solid ${i === 0 ? d.color + "60" : "#1E293B"}`,
