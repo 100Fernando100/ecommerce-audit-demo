@@ -380,22 +380,14 @@ export default function RevenuLeakDetector() {
     setResult(null);
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/audit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 4000,
-          messages: [{ role: "user", content: buildPrompt(url, industry) }],
-          tools: [{ type: "web_search_20250305", name: "web_search" }],
-        }),
+        body: JSON.stringify({ url, industry }),
       });
       const data = await res.json();
-      let text = "";
-      if (data.content) for (const b of data.content) if (b.type === "text") text += b.text;
-      const match = text.match(/\{[\s\S]*\}/);
-      if (match) { setResult(JSON.parse(match[0])); }
-      else throw new Error("parse");
+      if (res.ok) { setResult(data); }
+      else throw new Error(data.error || "Analysis failed");
     } catch (err) {
       setError(true);
       setResult(getDemoData(url));
