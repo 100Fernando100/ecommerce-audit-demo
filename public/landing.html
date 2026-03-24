@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multicomm.ai — Inteligencia Competitiva para Negocios Latinos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#1a1a1a;
+  --navy2:#222222;
+  --navy3:#2a2a2a;
+  --accent:#ef4444;
+  --accent2:#e94560;
+  --teal:#a1a1aa;
+  --text:#e4e4e7;
+  --muted:#71717a;
+  --border:#3f3f46;
+  --border2:#52525b;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--navy);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;}
+
+/* CUSTOM CURSOR */
+.cursor{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s;}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(233,69,96,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.15s,width 0.2s,height 0.2s,opacity 0.2s;}
+body:hover .cursor-ring{opacity:1;}
+
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+/* SCANLINE */
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:28px 40px;display:flex;align-items:center;justify-content:space-between;transition:background 0.3s,backdrop-filter 0.3s;}
+nav.scrolled{background:rgba(10,14,20,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:18px;letter-spacing:-0.5px;color:var(--text);}
+.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:36px;align-items:center;}
+.nav-links a,.nav-links button{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;background:none;border:none;cursor:none;padding:0;}
+.nav-links a:hover,.nav-links button:hover{color:var(--text);}
+.nav-cta{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;background:var(--accent);color:#fff;border:none;padding:10px 20px;cursor:none;transition:opacity 0.2s;}
+.nav-cta:hover{opacity:0.85;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:none;background:none;border:none;}
+.hamburger span{display:block;width:22px;height:1px;background:var(--text);transition:all 0.3s;}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:grid;grid-template-columns:1fr 300px;overflow:hidden;}
+.hero-main{padding:160px 40px 60px;position:relative;border-right:1px solid var(--border);}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:32px;display:flex;align-items:center;gap:10px;opacity:0;animation:fadeUp 0.8s ease forwards 0.2s;}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent);}
+.hero-h1{font-family:'DM Serif Display',serif;font-size:clamp(64px,9vw,128px);line-height:0.92;letter-spacing:-3px;margin-bottom:0;opacity:0;animation:fadeUp 0.9s ease forwards 0.4s;}
+.hero-h1 em{font-style:italic;color:var(--accent);}
+.hero-h1 .slash{font-family:'DM Mono',monospace;color:var(--muted);font-weight:300;}
+.hero-sub{font-size:14px;color:var(--muted);max-width:420px;line-height:1.7;margin-top:40px;opacity:0;animation:fadeUp 0.8s ease forwards 0.6s;}
+.hero-actions{display:flex;gap:16px;margin-top:48px;opacity:0;animation:fadeUp 0.8s ease forwards 0.8s;}
+.btn-primary{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:var(--accent);color:#fff;border:none;padding:14px 28px;cursor:none;transition:opacity 0.2s;}
+.btn-primary:hover{opacity:0.85;}
+.btn-secondary{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:none;color:var(--muted);border:1px solid var(--border2);padding:14px 28px;cursor:none;transition:all 0.2s;}
+.btn-secondary:hover{color:var(--text);border-color:var(--muted);}
+
+/* HERO STATS */
+.hero-stats{display:flex;gap:0;margin-top:80px;border-top:1px solid var(--border);opacity:0;animation:fadeUp 0.8s ease forwards 1s;}
+.stat{padding:24px 32px 24px 0;border-right:1px solid var(--border);margin-right:32px;}
+.stat:last-child{border-right:none;}
+.stat-num{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);letter-spacing:-1px;}
+.stat-num span{color:var(--accent);}
+.stat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* HERO SIDEBAR */
+.hero-sidebar{padding:160px 24px 60px;display:flex;flex-direction:column;gap:0;}
+.sidebar-block{padding:20px 0;border-bottom:1px solid var(--border);opacity:0;animation:slideInRight 0.7s ease forwards;}
+.sidebar-block:nth-child(1){animation-delay:0.5s;}
+.sidebar-block:nth-child(2){animation-delay:0.65s;}
+.sidebar-block:nth-child(3){animation-delay:0.8s;}
+.sidebar-block:nth-child(4){animation-delay:0.95s;}
+.sidebar-tag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.sidebar-title{font-size:13px;color:var(--text);line-height:1.4;margin-bottom:6px;}
+.sidebar-desc{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);line-height:1.6;}
+
+/* LIVE INDICATOR */
+.live-bar{display:flex;align-items:center;gap:8px;padding:16px 0;border-bottom:1px solid var(--border);}
+.live-dot{width:6px;height:6px;background:#3fb950;border-radius:50%;animation:pulseDot 2s ease-in-out infinite;}
+.live-text{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+
+/* BINARY TICKER */
+.binary-ticker{font-family:'DM Mono',monospace;font-size:8px;color:var(--border2);line-height:1.4;word-break:break-all;margin-top:auto;padding-top:20px;animation:binaryFlicker 4s ease-in-out infinite;}
+
+/* SECTIONS */
+section{position:relative;z-index:1;}
+
+/* SOLUTIONS */
+.solutions{padding:120px 40px;border-top:1px solid var(--border);}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:80px;}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.section-eyebrow::before{content:'';width:24px;height:1px;background:var(--accent);}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,5vw,64px);letter-spacing:-2px;line-height:1;}
+.section-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;}
+.solutions-grid{display:grid;grid-template-columns:repeat(3,1fr);}
+.solution-card{padding:40px 32px;border-left:1px solid var(--border);border-top:1px solid var(--border);transition:background 0.25s;cursor:none;position:relative;overflow:hidden;}
+.solution-card:hover{background:var(--navy3);}
+.solution-card::after{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:var(--accent);transition:width 0.35s ease;}
+.solution-card:hover::after{width:100%;}
+.solution-card:last-child,:nth-child(3n){border-right:1px solid var(--border);}
+.card-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:40px;}
+.card-title{font-family:'DM Serif Display',serif;font-size:26px;letter-spacing:-0.5px;margin-bottom:16px;line-height:1.1;}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:32px;}
+.card-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--border2);border:1px solid var(--border);padding:6px 12px;display:inline-block;transition:color 0.2s,border-color 0.2s;}
+.solution-card:hover .card-tag{color:var(--accent);border-color:var(--accent);}
+
+/* PROCESS */
+.process{padding:120px 40px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.process-steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:24px;padding:28px 0;border-bottom:1px solid var(--border);position:relative;}
+.step-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);min-width:32px;padding-top:2px;}
+.step-content{}
+.step-title{font-size:15px;font-weight:500;margin-bottom:6px;}
+.step-desc{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);line-height:1.6;letter-spacing:0.02em;}
+.step-accent{position:absolute;left:-1px;top:0;bottom:0;width:2px;background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform 0.4s ease;}
+.step:hover .step-accent{transform:scaleY(1);}
+
+/* PRICING */
+.pricing{padding:120px 40px;border-top:1px solid var(--border);}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:80px;border:1px solid var(--border);}
+.price-card{padding:40px 28px;border-right:1px solid var(--border);position:relative;transition:background 0.25s;}
+.price-card:last-child{border-right:none;}
+.price-card.featured{background:var(--navy3);}
+.price-card.featured::before{content:'Más popular';position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-50%);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;background:var(--accent);color:#fff;padding:4px 12px;}
+.price-tier{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+.price-amount{font-family:'DM Serif Display',serif;font-size:48px;letter-spacing:-2px;line-height:1;margin-bottom:4px;}
+.price-amount sup{font-size:20px;letter-spacing:0;vertical-align:top;margin-top:8px;display:inline-block;}
+.price-period{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:32px;}
+.price-range{font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:32px;padding:6px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:36px;}
+.price-features li{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.04em;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.price-features li::before{content:'→';color:var(--accent);flex-shrink:0;margin-top:1px;}
+.price-btn{width:100%;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;padding:12px;border:1px solid var(--border2);background:none;color:var(--muted);cursor:none;transition:all 0.2s;}
+.price-btn:hover,.price-card.featured .price-btn{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* DISCLAIMER */
+.disclaimer{padding:16px 40px;border-top:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;color:var(--border2);letter-spacing:0.04em;}
+
+/* CTA */
+.cta-section{padding:120px 40px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 400px;gap:80px;align-items:start;}
+.cta-title{font-family:'DM Serif Display',serif;font-size:clamp(40px,5vw,72px);letter-spacing:-2px;line-height:0.95;margin-bottom:20px;}
+.cta-title em{font-style:italic;color:var(--accent);}
+.cta-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:420px;}
+.cta-form{background:var(--navy3);border:1px solid var(--border);padding:36px;}
+.form-field{margin-bottom:20px;}
+.form-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;}
+.form-input{width:100%;background:var(--navy2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:12px 14px;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--teal);}
+.form-input::placeholder{color:var(--muted);opacity:0.5;}
+.form-submit{width:100%;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:var(--accent);color:#fff;border:none;padding:14px;cursor:none;margin-top:8px;transition:opacity 0.2s;}
+.form-submit:hover{opacity:0.85;}
+.form-note{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);margin-top:12px;line-height:1.6;letter-spacing:0.04em;}
+
+/* FOOTER */
+footer{padding:60px 40px 40px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;}
+.footer-brand{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-0.5px;margin-bottom:12px;}
+.footer-brand span{color:var(--accent);}
+.footer-tagline{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;line-height:1.7;}
+.footer-col-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--text);}
+.footer-bottom{grid-column:1/-1;border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
+.footer-copy{font-family:'DM Mono',monospace;font-size:9px;color:var(--border2);letter-spacing:0.06em;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.6);}}
+@keyframes binaryFlicker{0%,100%{opacity:0.15;}50%{opacity:0.05;}}
+@keyframes scanLine{0%{transform:translateY(-100%);}100%{transform:translateY(100vh);}}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+
+/* ABOUT */
+.about{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;min-height:90vh;border-top:1px solid var(--border);}
+.about-image{position:relative;overflow:hidden;}
+.about-image-overlay{position:absolute;inset:0;background:linear-gradient(to right, transparent 60%, var(--navy) 100%), linear-gradient(to top, var(--navy) 0%, transparent 30%);}
+.about-content{padding:80px 60px;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--border);}
+.about-name{font-family:'DM Serif Display',serif;font-size:clamp(48px,6vw,80px);letter-spacing:-2px;line-height:0.95;margin:16px 0 12px;}
+.about-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:40px;line-height:1.6;}
+.about-quote{border-left:2px solid var(--accent);padding-left:24px;margin:0 0 48px;font-family:'DM Serif Display',serif;font-size:clamp(16px,2vw,22px);font-style:italic;color:var(--muted);line-height:1.5;letter-spacing:-0.3px;}
+.about-credentials{display:flex;flex-direction:column;gap:0;}
+.credential{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);align-items:baseline;}
+.credential:last-child{border-bottom:none;}
+.credential-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
+.credential-value{font-size:13px;color:var(--text);line-height:1.5;}
+
+@media(max-width:768px){
+  .about{grid-template-columns:1fr;}
+  .about-image{height:60vw;min-height:280px;}
+  .about-image-overlay{background:linear-gradient(to top, var(--navy) 0%, transparent 40%);}
+  .about-content{padding:40px 20px;}
+}
+/* MOBILE */
+@media(max-width:768px){
+  nav{padding:20px 20px;}
+  .nav-links,.nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .hero{grid-template-columns:1fr;}
+  .hero-main{padding:120px 20px 40px;border-right:none;}
+  .hero-sidebar{display:none;}
+  .solutions{padding:60px 20px;}
+  .solutions-grid{grid-template-columns:1fr;}
+  .solution-card{border-right:1px solid var(--border);}
+  .process{grid-template-columns:1fr;padding:60px 20px;gap:40px;}
+  .pricing{padding:60px 20px;}
+  .pricing-grid{grid-template-columns:1fr 1fr;}
+  .price-card:nth-child(2){border-right:none;}
+  .cta-section{grid-template-columns:1fr;padding:60px 20px;gap:40px;}
+  footer{grid-template-columns:1fr;padding:40px 20px;}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center;}
+  .hero-stats{flex-direction:column;gap:0;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);padding:16px 0;}
+}
+
+/* MOBILE MENU */
+.mobile-menu{position:fixed;inset:0;z-index:90;background:var(--navy);display:flex;flex-direction:column;justify-content:center;padding:40px 20px;transform:translateX(100%);transition:transform 0.35s ease;}
+.mobile-menu.open{transform:translateX(0);}
+.mobile-menu nav a,.mobile-menu nav button{display:block;font-family:'DM Serif Display',serif;font-size:42px;letter-spacing:-1px;color:var(--muted);text-decoration:none;margin-bottom:16px;transition:color 0.2s;background:none;border:none;cursor:none;text-align:left;width:100%;padding:0;}
+.mobile-menu nav a:hover,.mobile-menu nav button:hover{color:var(--text);}
+.mobile-menu-footer{position:absolute;bottom:40px;left:20px;right:20px;border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;}
+.mobile-menu-footer span{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">Multicomm<span>.</span>ai</div>
+  <div class="nav-links">
+    <button onclick="scrollTo('solutions')">Soluciones</button>
+    <button onclick="scrollTo('proceso')">Cómo funciona</button>
+    <button onclick="scrollTo('pricing')">Precios</button>
+    <button onclick="scrollTo('about')">Nosotros</button>
+    <button onclick="scrollTo('contacto')">Contacto</button>
+  </div>
+  <button class="nav-cta" onclick="scrollTo('contacto')">Empezar →</button>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <nav>
+    <button onclick="closeMobile();scrollTo('solutions')">Soluciones</button>
+    <button onclick="closeMobile();scrollTo('proceso')">Proceso</button>
+    <button onclick="closeMobile();scrollTo('pricing')">Precios</button>
+    <button onclick="closeMobile();scrollTo('about')">Nosotros</button>
+    <button onclick="closeMobile();scrollTo('contacto')">Contacto</button>
+  </nav>
+  <div class="mobile-menu-footer">
+    <span>Multicomm.ai</span>
+    <span>Toronto, ON</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-main">
+    <div class="hero-eyebrow">Inteligencia Competitiva · Latino E-commerce</div>
+    <h1 class="hero-h1">
+      Intel<span class="slash">/</span><br>
+      <em>igencia</em>
+    </h1>
+    <p class="hero-sub">Descubrí exactamente qué está haciendo tu competencia, cuánto está gastando y qué influencers está usando — todo en un reporte PDF en español, listo en minutos.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="scrollTo('contacto')">Obtener mi reporte →</button>
+      <button class="btn-secondary" onclick="scrollTo('solutions')">Ver soluciones</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">$500K<span>+</span></div>
+        <div class="stat-label">Facturación mínima del cliente</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">~2<span>min</span></div>
+        <div class="stat-label">Tiempo de generación del reporte</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6<span>dims</span></div>
+        <div class="stat-label">Framework B-CFQ cultural</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="hero-sidebar">
+    <div class="live-bar">
+      <div class="live-dot"></div>
+      <div class="live-text">Sistema activo — análisis en tiempo real</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-tag">Competidores</div>
+      <div class="sidebar-title">Análisis de campañas activas en Meta, TikTok y Google Ads</div>
+      <div class="sidebar-desc">Detectamos creativos longevos como señal de alto ROAS</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-tag">Influencers</div>
+      <div class="sidebar-title">Evaluación de fit cultural latino + estimación de costo</div>
+      <div class="sidebar-desc">Autenticidad vs. estereotipo — score por influencer</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-tag">Inversión</div>
+      <div class="sidebar-title">Estimación de gasto publicitario mensual de cada competidor</div>
+      <div class="sidebar-desc">Brecha de inversión y canal diferenciador para vos</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-tag">Creative Hooks</div>
+      <div class="sidebar-title">Scripts de video 15 seg listos para filmar con tu celular</div>
+      <div class="sidebar-desc">Framework Gancho-Historia-Oferta · B-CFQ aplicado</div>
+    </div>
+    <div class="binary-ticker" id="binaryTicker">01001101 01110101 01101100 01110100 01101001 01100011 01101111 01101101 01101101 00101110 01100001 01101001</div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section class="solutions" id="solutions">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-eyebrow">Lo que analizamos</div>
+      <div class="section-title">Cuatro<br>módulos</div>
+    </div>
+    <div class="section-num">01 / 04</div>
+  </div>
+  <div class="solutions-grid">
+    <div class="solution-card reveal">
+      <div class="card-num">01</div>
+      <h3 class="card-title">Análisis Competitivo</h3>
+      <p class="card-desc">Scraping público de Meta Ad Library, TikTok Creative Center y SerperDev para mapear qué campañas está corriendo tu competencia y en qué canales concentra su inversión.</p>
+      <span class="card-tag">Meta · TikTok · SEO</span>
+    </div>
+    <div class="solution-card reveal">
+      <div class="card-num">02</div>
+      <h3 class="card-title">Evaluación de Influencers</h3>
+      <p class="card-desc">Score de fit cultural latino en escala de 1–10. Diferenciamos integración orgánica de poses estereotipadas. Estimación de costo por post, story y campaña trimestral.</p>
+      <span class="card-tag">B-CFQ · ROI · Costo</span>
+    </div>
+    <div class="solution-card reveal">
+      <div class="card-num">03</div>
+      <h3 class="card-title">Estimación de Inversión</h3>
+      <p class="card-desc">Calculamos cuánto gasta cada competidor en Meta Ads, Google Ads y TikTok usando métricas proxy públicas. Gráfico comparativo cliente vs. competencia con brecha total mensual.</p>
+      <span class="card-tag">Benchmarks · Brecha</span>
+    </div>
+    <div class="solution-card reveal">
+      <div class="card-num">04</div>
+      <h3 class="card-title">Creative Hook Engine</h3>
+      <p class="card-desc">Generamos 5 scripts de video de 15 segundos usando el framework Gancho-Historia-Oferta. Copiamos la estructura psicológica del competidor exitoso, adaptada a tu marca.</p>
+      <span class="card-tag">Scripts · Video · Celular</span>
+    </div>
+    <div class="solution-card reveal">
+      <div class="card-num">05</div>
+      <h3 class="card-title">Calendario Q1–Q4</h3>
+      <p class="card-desc">Plan de campañas para los próximos 12 meses basado en los picos estacionales detectados en la competencia. Canal principal, tema y acción concreta por trimestre.</p>
+      <span class="card-tag">Estrategia · Estacionalidad</span>
+    </div>
+    <div class="solution-card reveal">
+      <div class="card-num">06</div>
+      <h3 class="card-title">Gaps y Oportunidades</h3>
+      <p class="card-desc">Qué NO está haciendo tu competencia que vos podés capitalizar. Priorizados por impacto (Alta / Media / Baja) con acciones inmediatas para esta semana.</p>
+      <span class="card-tag">Gaps · Acción inmediata</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="proceso">
+  <div class="reveal">
+    <div class="section-eyebrow">Cómo funciona</div>
+    <div class="section-title" style="margin-bottom:16px;">Simple.<br>Rápido.<br><em style="color:var(--accent)">Accionable.</em></div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7;max-width:340px;">Sin integraciones complejas. Sin conectar tu tienda. Solo pegás los URLs de tus competidores y los handles de los influencers que viste usar — el resto lo hacemos nosotros.</p>
+  </div>
+  <div class="process-steps reveal">
+    <div class="step">
+      <div class="step-accent"></div>
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Completás el formulario</div>
+        <div class="step-desc">URL de tu tienda · URLs de competidores (hasta 5) · Handles de influencers</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-accent"></div>
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">Scraping público automatizado</div>
+        <div class="step-desc">Analizamos Meta Ad Library, TikTok Creative Center, SEO y presencia orgánica de todos</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-accent"></div>
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Claude AI genera el análisis</div>
+        <div class="step-desc">Framework B-CFQ aplicado · Estimaciones con benchmarks de industria · Scripts creativos</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-accent"></div>
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <div class="step-title">PDF en tu email en ~2 minutos</div>
+        <div class="step-desc">Reporte branded completo · Todo en español · Listo para compartir con tu equipo</div>
+      </div>
+    </div>
+    <div class="step" style="border-bottom:none;">
+      <div class="step-accent"></div>
+      <div class="step-num">05</div>
+      <div class="step-content">
+        <div class="step-title">Tomás decisiones esta semana</div>
+        <div class="step-desc">Acciones inmediatas priorizadas · Scripts listos para filmar · Presupuesto justificado</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-eyebrow">Planes</div>
+      <div class="section-title">Inversión</div>
+    </div>
+    <div class="section-num">03 / 04</div>
+  </div>
+  <div class="pricing-grid reveal">
+    <div class="price-card">
+      <div class="price-tier">Starter</div>
+      <div class="price-amount"><sup>$</sup>197</div>
+      <div class="price-period">/ mes</div>
+      <div class="price-range">$500K – $1M facturación</div>
+      <ul class="price-features">
+        <li>3 competidores analizados</li>
+        <li>Análisis de canales + inversión estimada</li>
+        <li>Sin análisis de influencers</li>
+        <li>Reporte PDF en español</li>
+        <li>1 reporte mensual</li>
+      </ul>
+      <button class="price-btn" onclick="scrollTo('contacto')">Empezar</button>
+    </div>
+    <div class="price-card featured">
+      <div class="price-tier">Pro</div>
+      <div class="price-amount"><sup>$</sup>397</div>
+      <div class="price-period">/ mes</div>
+      <div class="price-range">$1M – $3M facturación</div>
+      <ul class="price-features">
+        <li>5 competidores analizados</li>
+        <li>5 influencers con score B-CFQ</li>
+        <li>Estimación de costos influencer</li>
+        <li>5 scripts Creative Hook Engine</li>
+        <li>Calendario Q1–Q4</li>
+        <li>2 reportes mensuales</li>
+      </ul>
+      <button class="price-btn" onclick="scrollTo('contacto')">Empezar</button>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">Business</div>
+      <div class="price-amount"><sup>$</sup>697</div>
+      <div class="price-period">/ mes</div>
+      <div class="price-range">$3M – $5M facturación</div>
+      <ul class="price-features">
+        <li>8 competidores analizados</li>
+        <li>10 influencers evaluados</li>
+        <li>War Room heurístico</li>
+        <li>10 scripts Creative Hooks</li>
+        <li>Alertas de cambios competitivos</li>
+        <li>Reportes semanales</li>
+      </ul>
+      <button class="price-btn" onclick="scrollTo('contacto')">Empezar</button>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">Agency</div>
+      <div class="price-amount"><sup>$</sup>1,497</div>
+      <div class="price-period">/ mes</div>
+      <div class="price-range">$5M – $10M · White label</div>
+      <ul class="price-features">
+        <li>Hasta 5 clientes</li>
+        <li>PDF con tu marca</li>
+        <li>Acceso API</li>
+        <li>Todo Business incluido</li>
+        <li>Soporte prioritario</li>
+      </ul>
+      <button class="price-btn" onclick="scrollTo('contacto')">Hablar con ventas</button>
+    </div>
+  </div>
+  <div class="disclaimer reveal">* Estimaciones basadas en actividad pública. No representan ventas ni cifras reales de terceros. No constituye asesoramiento financiero.</div>
+</section>
+
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-image">
+    <img src="./fernando-sorokin.png" 
+         alt="Fernando Sorokin — Multicomm.ai"
+         id="aboutImg"
+         style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(100%) contrast(1.1);">
+    <div class="about-image-overlay"></div>
+  </div>
+  <div class="about-content">
+    <div class="section-eyebrow reveal">Fundador</div>
+    <h2 class="about-name reveal">Fernando<br>Sorokin</h2>
+    <div class="about-title reveal">Builder de Herramientas<br>para el Ecosistema Latino</div>
+    <blockquote class="about-quote reveal">
+      "Vi cómo negocios latinos perdían contra competidores que gastaban el doble — sin siquiera saberlo. Construí Multicomm.ai para cambiar eso."
+    </blockquote>
+    <div class="about-credentials reveal">
+      <div class="credential">
+        <div class="credential-label">Formación</div>
+        <div class="credential-value">Contador Público · Full-Stack Developer</div>
+      </div>
+      <div class="credential">
+        <div class="credential-label">Base</div>
+        <div class="credential-value">Ontario, Canadá</div>
+      </div>
+      <div class="credential">
+        <div class="credential-label">Especialidad</div>
+        <div class="credential-value">E-commerce Latino · AI Products</div>
+      </div>
+      <div class="credential">
+        <div class="credential-label">También</div>
+        <div class="credential-value">Cruce Seguro — Compliance cross-border MX·US·CA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contacto">
+  <div class="reveal">
+    <div class="section-eyebrow">Empezar</div>
+    <div class="cta-title">Tu primer<br>reporte en<br><em>2 minutos</em></div>
+    <p class="cta-sub" style="margin-top:24px;">Completá el formulario con los URLs de tus competidores. Sin tarjeta de crédito para empezar — te contactamos para confirmar y coordinar el pago.</p>
+  </div>
+  <div class="cta-form reveal">
+    <div class="form-field">
+      <label class="form-label">Nombre de tu negocio *</label>
+      <input class="form-input" type="text" placeholder="Tienda Latina LA">
+    </div>
+    <div class="form-field">
+      <label class="form-label">Tu email *</label>
+      <input class="form-input" type="email" placeholder="hola@tunegocio.com">
+    </div>
+    <div class="form-field">
+      <label class="form-label">URL de tu tienda *</label>
+      <input class="form-input" type="url" placeholder="https://mitienda.com">
+    </div>
+    <div class="form-field">
+      <label class="form-label">Nicho / categoría *</label>
+      <input class="form-input" type="text" placeholder="Ropa latina para mujer, snacks mexicanos...">
+    </div>
+    <div class="form-field">
+      <label class="form-label">Plan que te interesa</label>
+      <select class="form-input" style="cursor:none;">
+        <option>Pro — $397/mes</option>
+        <option>Starter — $197/mes</option>
+        <option>Business — $697/mes</option>
+        <option>Agency — $1,497/mes</option>
+      </select>
+    </div>
+    <button class="form-submit">Solicitar mi reporte →</button>
+    <p class="form-note">Sin compromisos. Te contactamos en menos de 24 horas. Pago por e-transfer o PayPal una vez confirmado.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Multicomm<span>.</span>ai</div>
+    <div class="footer-tagline">Inteligencia Competitiva<br>para Negocios Latinos<br>Toronto, Ontario · Canadá</div>
+  </div>
+  <div>
+    <div class="footer-col-title">Producto</div>
+    <ul class="footer-links">
+      <li><a href="#solutions">Soluciones</a></li>
+      <li><a href="#proceso">Cómo funciona</a></li>
+      <li><a href="#pricing">Precios</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Legal</div>
+    <ul class="footer-links">
+      <li><a href="#">Términos de uso</a></li>
+      <li><a href="#">Privacidad</a></li>
+      <li><a href="#">Disclaimer</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Multicomm.ai · Ontario, Canada · Todos los derechos reservados</div>
+    <div class="footer-copy">Los reportes se generan con datos públicos · No constituye asesoramiento legal ni financiero</div>
+  </div>
+</footer>
+
+<script>
+// SMOOTH SCROLL HELPER
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 80);
+});
+document.querySelectorAll('a,button,input,select').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    ring.style.width = '48px';
+    ring.style.height = '48px';
+    ring.style.borderColor = 'var(--accent)';
+  });
+  el.addEventListener('mouseleave', () => {
+    ring.style.width = '32px';
+    ring.style.height = '32px';
+    ring.style.borderColor = 'rgba(233,69,96,0.4)';
+  });
+});
+
+// NAV SCROLL
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// HAMBURGER
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+function closeMobile() { mobileMenu.classList.remove('open'); }
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// BINARY TICKER
+const bin = document.getElementById('binaryTicker');
+if (bin) {
+  setInterval(() => {
+    bin.textContent = Array.from({length: 96}, () => Math.random() > 0.5 ? '1' : '0').join('').match(/.{8}/g).join(' ');
+  }, 2000);
+}
+</script>
+</body>
+</html>
